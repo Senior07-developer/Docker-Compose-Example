@@ -1,0 +1,32 @@
+version: '3.4'
+
+services:
+  docker.compose.api:
+    image: ${DOCKER_REGISTRY-}dockercomposeapi
+    container_name: products.api
+    build:
+      context: .
+      dockerfile: Docker.Compose.API/Dockerfile
+    ports:
+        - "5000:5000"
+        - "5001:5001"
+          
+  docker.compose.database:
+    image: postgres:latest
+    container_name: products.database
+    environment:
+      - POSTGRES_DB=ProductsDb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./.containers/products-db:/var/lib/postgres/data
+    ports:
+      - "5432:5432"
+
+  docker.compose.cache:
+    image: redis:latest
+    container_name: products.cache
+    restart: always
+    ports:
+      - "6378:6379"
+    
